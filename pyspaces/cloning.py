@@ -110,10 +110,8 @@ class Clone(Popen):
 
         # Create the child in new namespace(s)
         child = CFUNCTYPE(c_int)(self.child)
-        child_stack = create_string_buffer(STACK_SIZE)
-        child_stack_pointer = c_void_p(cast(child_stack, c_void_p).value + STACK_SIZE)
 
-        self.pid = libc.clone(child, child_stack_pointer, flags | SIGCHLD)
+        self.pid = libc.clone(child, 0, flags | SIGCHLD)
 
         if self.pid == -1:
             e = get_errno()
